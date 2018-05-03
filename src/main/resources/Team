@@ -1,0 +1,43 @@
+219.157.54.132|0.000|-|30/Mar/2018:03:23:09 +0800|GET 
+/?bData=eyJrdGluZ1Rva2VuIjoid21JampcL1ROOFc0MW1HdklyOVJuSjZDKzZGN29xV0Fjb09XWkxlbjZ6VE9QQU5zekk3Y2NVUnFBTkhkdk5ZS1ZDRnE4MmwwUVlScUY5MDVIWmoyQ1Z3PT0iLCJiZWhhdmlvcktleSI6IkRGU0oxMDAiLCJiZWhhdmlvckRhdGEiOnsiem9uZ0tleSI6IkZNMjA2IiwiY2hhbm5lbElkIjoiNTIifX0= 
+HTTP/1.1|200|5|"Dalvik/2.1.0 
+(Linux; U; Android 6.0; HUAWEI VNS-AL00 Build/HUAWEIVNS-AL00)" sendfileon
+
+
+Map(os_n -> Android, ip -> 106.119.37.116, playTime -> 1185, city -> 唐山, programId -> 248953, 
+access_time -> 1522096127000, albumId -> 15286, behaviorKey -> DFSJ400, country -> 中国, province -> 河北, 
+os_v -> 6.0.1, modelNum -> HONORATH-AL00, request_type -> GET, on-off -> true, behaviorData -> 
+
+
+
+{"albumId":"15286","on-off":true,"playTime":1185,"programId":"248953","zongKey":"FM702"}, zongKey -> FM702, behavior -> bData)
+
+
+项目所需字段以及属性：
+
+os_n:操作系统名称
+os_v:操作系统版本
+ip:ip地址
+country:国家
+province:省份
+city:城市
+albumId:专辑id
+programId:节目id
+playTime：播放时长
+access_time：日志时间
+
+behaviorKey：行为标识Key
+behaviorData：用户行为数据
+
+
+modelNum：手机型号
+request_type：请求方式 GET 或POST
+anchorId:主播id
+zongKey：app区域信息
+behavior:用户行为标识
+
+
+1.根据“/？”去切分，然后判断pData整条信息(request_type  请求方式)过滤掉
+2.根据传入ip去判断该访问地点来自哪个国家，省份，城市；
+3.将日志时间转换成时间戳形式
+4.
