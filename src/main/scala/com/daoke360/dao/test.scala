@@ -5,4 +5,7 @@ package com.daoke360.dao
   */
 object test {
 
+  def main(args: Array[String]): Unit = {
+
+  }
 }
