@@ -1,8 +1,8 @@
-package com.daoke360.utils
+package com.daoke360.dao
 
 /**
   * Created by lian on 2018/5/3.
   */
-object Utils {
+object test {
 
 }
