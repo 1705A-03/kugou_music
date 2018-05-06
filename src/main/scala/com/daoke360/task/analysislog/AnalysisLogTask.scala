@@ -85,8 +85,7 @@ object AnalysisLogTask {
     filterRDD.map(logText=>{
        LogAnalysisUtils.analysisLog(logText,ipRulesBroadCast.value)
     }).foreach(println(_))
-//    Map(os_n -> 6.0, ip -> 219.157.54.132, city -> 洛阳, behaviorKey -> DFSJ100, access_time -> 1522351389000, country -> 中国, os_v -> Android, province -> 河南, modelNum -> HUAWEIVNS-AL00, request_type -> GET , behaviorData -> {"channelId":"52","zongKey":"FM206"}, behavior -> bData)
-//    Map(os_n -> 8.0.0, ip -> 183.227.7.117, city -> 重庆, behaviorKey -> DFSJ101, access_time -> 1522351389000, country -> 中国, os_v -> Android, province -> 重庆, modelNum -> HUAWEIHWI-AL00, request_type -> GET , behaviorData -> {"zongKey":"FM100"}, behavior -> bData)
+
 //    Map(os_n -> 8.0.0, ip -> 222.85.235.216, city -> 贵阳, behaviorKey -> DFSJ103, access_time -> 1522351389000, country -> 中国, os_v -> Android, province -> 贵州, modelNum -> HUAWEIBKL-AL00, request_type -> GET , behaviorData -> {"zongKey":"FM601"}, behavior -> bData)
 //    Map(os_n -> 6.0, ip -> 219.157.54.132, city -> 洛阳, behaviorKey -> DFSJ100, access_time -> 1522351389000, country -> 中国, os_v -> Android, province -> 河南, modelNum -> HUAWEIVNS-AL00, request_type -> GET , behaviorData -> {"channelId":"59","zongKey":"FM206"}, behavior -> bData)
 
