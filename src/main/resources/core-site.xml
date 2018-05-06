@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<!--
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License. See accompanying LICENSE file.
+-->
+
+<!-- Put site-specific property overrides in this file. -->
+
+<configuration>
+    <property>
+			<name>fs.defaultFS</name>
+			<value>hdfs://vm1:9000</value>
+	</property>
+	<property>
+		<name>hbase.zookeeper.quorum</name>
+		<value>vm1:2181,vm2:2181,vm3:2181</value>
+	</property>
+
+
+	<!--TODO Kafka配置-->
+	<property>
+		<name>metadata.broker.list</name>
+		<value>vm1:9092,vm2:9092,vm3:9092</value>
+	</property>
+	<property>
+		<name>kafka.topic</name>
+		<value>event_log</value>
+	</property>
+	<property>
+		<name>auto.offset.reset</name>
+		<!--largest/smallest-->
+		<value>largest</value>
+	</property>
+	<property>
+		<name>group.id</name>
+		<value>w17055</value>
+	</property>
+	<!--TODO mysql  spark-streaming-->
+	<property>
+		<name>streaming.checkpoint.path</name>
+		<value>/checkpoint/w1705/</value>
+	</property>
+
+	<property>
+		<name>batch.interval</name>
+		<value>5</value>
+	</property>
+
+
+
+	<property>
+		<name>jdbc.driver</name>
+		<value>com.mysql.jdbc.Driver</value>
+	</property>
+	<property>
+		<name>jdbc.datasource.size</name>
+		<value>5</value>
+	</property>
+	<property>
+		<name>jdbc.url</name>
+		<value>jdbc:mysql://localhost:3306/bi?characterEncoding=utf-8</value>
+	</property>
+	<property>
+		<name>jdbc.user</name>
+		<value>root</value>
+	</property>
+	<property>
+		<name>jdbc.password</name>
+		<value>123</value>
+	</property>
+	<property>
+		<name>jdbc.password</name>
+		<value>root</value>
+	</property>
+
+
+</configuration>

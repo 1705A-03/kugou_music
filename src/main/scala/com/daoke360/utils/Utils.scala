@@ -1,12 +1,40 @@
 package com.daoke360.utils
 
 import java.text.SimpleDateFormat
+import java.util.{Base64, Locale}
 import java.util.regex.Pattern
+
+import com.alibaba.fastjson.JSON
 
 /**
   * Created by Luo on 2018/5/3.
   */
 object Utils {
+
+
+  def parseNginxTime2Long(nginxTime: String) = {
+    val sdf = new SimpleDateFormat("dd/MMM/yyyy:HH:mm:ss +0800", Locale.ENGLISH)
+    val date = sdf.parse(nginxTime)
+    date.getTime
+  }
+  /**
+    *30/Mar/2018:03:23:09 +0800转换为yyyy-MM-dd HH:mm:ss格式
+    * @param date
+    *
+    * @param patterns
+    * @return
+    */
+  def formatDateTime(date:String,pattern: String,patterns:String)={
+    //设置时间格式
+    val sdf1 = new SimpleDateFormat(pattern,Locale.US)
+    //解析成"dd/MMM/yyyy:hh:mm:ss Z"
+    val time = sdf1.parse(date)
+    //设置时间格式
+    val sdf = new SimpleDateFormat(patterns)
+    //dd/MMM/yyyy:hh:mm:ss Z 格式为 "yyyy-MM-dd HH:mm:ss
+    sdf.format(time)
+
+  }
   /**
     * 将时间戳转换成指定格式的 日期
     *
@@ -22,7 +50,7 @@ object Utils {
   }
 
   /**
-    * 将指定格式的日期转换成long类型的时间戳
+    * 将指定格式的日期yyyy-MM-dd转换成long类型的时间戳
     *
     * @param inputDate
     * @param pattern
