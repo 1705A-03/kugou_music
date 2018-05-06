@@ -107,7 +107,7 @@ object AnalysisLogTask {
       val ip = map(EventLogContants.LOG_COLUMN_NAME_IP)
       //构建rowkey
       val rowKey = accessTime + "_" + Math.abs(ip.hashCode)
-      //构建put对象ip
+      //构建put对象
       val put = new Put(rowKey.getBytes())
       map.foreach(t2 => {
         put.addColumn(EventLogContants.HBASE_EVENT_LOG_TABLE_FAMILY.getBytes(), t2._1.getBytes(), t2._2.getBytes())
