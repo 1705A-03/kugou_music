@@ -33,6 +33,7 @@ object LogAnalysisUtils {
       val requestParams= fields(1).split(" ")
       if(requestParams.length==2){
         val dataParams = requestParams(0).split("\\=")
+        //?pData
         val datatype = dataParams(0).split("\\?")
         if(datatype.length==2){
           everntLogMap.put(EventLogContants.LOG_COLUMN_NAME_BEHAVIOR,datatype(1))
@@ -42,6 +43,8 @@ object LogAnalysisUtils {
           val str = new String(decoders,"utf-8")
           var parseObject = JSON.parseObject(str)
           val behaviordata:String = parseObject.getString("behaviorData")
+          checkOutBHD(behaviordata,everntLogMap)
+
           val behaviorkey:String = parseObject.getString("behaviorKey")
 
           if(behaviordata != null){
@@ -50,19 +53,32 @@ object LogAnalysisUtils {
               everntLogMap.put(EventLogContants.LOG_COLUMN_NAME_BEHAVIORKEY,behaviorkey.toString)
             }
           }
-
-
         }
       }
-
-
-
-
-
-
-
     }
 
+  }
+
+  /**
+    *
+    * @param bhd 穿进去的jason串
+    * @param eventLogMap 传出来的map
+    * @return
+    */
+  def checkOutBHD(bhd: String, eventLogMap: mutable.HashMap[String, String]) = {
+    val bhdMes = "["+bhd+"]"
+    val arr = JSON.parseArray(bhdMes)
+    for(i <- 0 until(arr.size())){
+      val jsonStr = arr.getJSONObject(i)//这里就是json数据：{"albumId":"16287","anchorId":"11572","on-off":false,"playTime":0,"programId":"314670","zongKey":"FM702"}
+      val keySet = jsonStr.keySet()//数据中所有的key  ：albumId  anchorId  off  playTime  programId  zongKey
+      val key = keySet.iterator()
+      while (key.hasNext){
+        val nextKey = key.next()  //key  :albumId
+        val value = jsonStr.get(nextKey)//value ：16287
+        eventLogMap.put(nextKey,value.toString)
+      }
+    }
+    eventLogMap
   }
 
   //处理ip地址
@@ -86,8 +102,8 @@ object LogAnalysisUtils {
       everntLogMap.put(EventLogContants.LOG_COLUMN_NAME_MODELNUM,system(0))
        if(version.length==4){
          val svion = version(2).split(" ")
-              everntLogMap.put(EventLogContants.LOG_COLUMN_NAME_OS_N,svion(2))
-              everntLogMap.put(EventLogContants.LOG_COLUMN_NAME_OS_V,svion(1))
+              everntLogMap.put(EventLogContants.LOG_COLUMN_NAME_OS_N,svion(1))
+              everntLogMap.put(EventLogContants.LOG_COLUMN_NAME_OS_V,svion(2))
 
        }
 
@@ -107,13 +123,12 @@ object LogAnalysisUtils {
        everntLogMap = new mutable.HashMap[String,String]()
         //用户ip
         everntLogMap.put(EventLogContants.LOG_COLUMN_NAME_IP,fields(0))
-        //处理id
+        //处理ip
         handlerIp(everntLogMap,ipRules)
-        //用户访问时间
+        //用户访问时间  30/Mar/2018:03:24:01 +0800 转换成yyyy-MM-dd HH:mm:ss 再转换成Long类型
         var access=Utils.formatDateTime(fields(3),"dd/MMM/yyyy:hh:mm:ss Z","yyyy-MM-dd HH:mm:ss")
         var access_time=Utils.parseDate2Long(access,"yyyy-MM-dd HH:mm:ss").toString
         everntLogMap.put(EventLogContants.LOG_COLUMN_NAME_ACCESS_TIME,access_time)
-
 
         //请求
         val requestBody = fields(4)
@@ -126,7 +141,5 @@ object LogAnalysisUtils {
       }
     }
     everntLogMap
-
   }
-
 }

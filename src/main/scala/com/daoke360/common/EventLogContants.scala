@@ -35,6 +35,18 @@ object EventLogContants {
     * */
   final val LOG_COLUMN_NAME_CITY = "city"
 
+  /**
+    * 列族
+    * */
+  final val HBASE_EVENT_LOG_TABLE_FAMILY = "log"
+
+  /**
+    * 保存日志的表
+    */
+  final val HBASE_EVENT_LOG_TABLE = "event"
+
+
+
 
   /**
     * os_n:操作系统名称

@@ -19,18 +19,18 @@
 <configuration>
     <property>
 			<name>fs.defaultFS</name>
-			<value>hdfs://vm1:9000</value>
+			<value>hdfs://bclc-1:9000</value>
 	</property>
 	<property>
 		<name>hbase.zookeeper.quorum</name>
-		<value>vm1:2181,vm2:2181,vm3:2181</value>
+		<value>bclc-1:2181,bclc-2:2181,bclc-3:2181</value>
 	</property>
 
 
 	<!--TODO Kafka配置-->
 	<property>
 		<name>metadata.broker.list</name>
-		<value>vm1:9092,vm2:9092,vm3:9092</value>
+		<value>bclc-1:9092,bclc-2:9092,bclc-3:9092</value>
 	</property>
 	<property>
 		<name>kafka.topic</name>
@@ -73,10 +73,6 @@
 	<property>
 		<name>jdbc.user</name>
 		<value>root</value>
-	</property>
-	<property>
-		<name>jdbc.password</name>
-		<value>123</value>
 	</property>
 	<property>
 		<name>jdbc.password</name>
