@@ -14,7 +14,7 @@ object GlobalContants {
   /**
     * 日志分割标记
     */
-  final val LOG_SPLIT_FLAG: String = "|"
+  final val LOG_SPLIT_FLAG: String = "\\|"
 
   /**
     * 任务参数开始的标记

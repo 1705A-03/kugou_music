@@ -105,4 +105,10 @@ object EventLogContants {
     * 用户行为标识
     * */
   final val LOG_COLUMN_NAME_BEHAVIOR = "behavior"
+  /**
+    * 主播id
+    */
+  final val LOG_COLUMN_NAME_ANCHORID="archorid"
+
+  final val LOG_COLUMN_NAME_ON_OFF="on-off"
 }
