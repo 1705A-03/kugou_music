@@ -2,11 +2,15 @@ package com.daoke360.task.analysislog
 
 
 import com.daoke360.caseclass.IPRule
-import com.daoke360.common.GlobalContants
+import com.daoke360.common.{EventLogContants, GlobalContants}
 import com.daoke360.task.utils.LogAnalysisUtils
 import com.daoke360.utils.Utils
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.{FileSystem, Path}
+import org.apache.hadoop.hbase.client.Put
+import org.apache.hadoop.hbase.io.ImmutableBytesWritable
+import org.apache.hadoop.hbase.mapred.TableOutputFormat
+import org.apache.hadoop.mapred.JobConf
 import org.apache.spark.{SparkConf, SparkContext, SparkException}
 
 
@@ -59,7 +63,11 @@ object AnalysisLogTask {
   def main(args: Array[String]): Unit = {
 
     val sparkConf = new SparkConf().setAppName(this.getClass.getSimpleName).setMaster("local[2]")
-
+    val jobConf = new JobConf(new Configuration())
+    //指定输出的类，这个类专门用来将spark处理的结果写入到hbase中
+    jobConf.setOutputFormat(classOf[TableOutputFormat])
+    //指定要将数据写入到哪张表
+    jobConf.set(TableOutputFormat.OUTPUT_TABLE, EventLogContants.HBASE_EVENT_LOG_TABLE)
     //验证输入参数是否正确
     processArgs(args,sparkConf)
     //处理输入路径
@@ -69,7 +77,7 @@ object AnalysisLogTask {
     val sc = new SparkContext(sparkConf)
 
     //加载ip规则库
-    val ipRules: Array[IPRule] = sc.textFile("/spark_sf_project/resource/ip.data").map(line => {
+    val ipRules: Array[IPRule] = sc.textFile("/spark_data/ip.data").map(line => {
       val fields = line.split("\\|")
       IPRule(fields(2).toLong, fields(3).toLong, fields(5), fields(6), fields(7))
     }).collect()
@@ -80,16 +88,34 @@ object AnalysisLogTask {
       * 加载hdfs的日志
       */
 //        val filterRDD = sc.textFile("C:\\aaa\\bigdata_access.log-2018033101").filter(_.length>0).filter(line=>line.indexOf("bData")>0)
-    val filterRDD = sc.textFile(sparkConf.get(GlobalContants.TASK_INPUT_PATH)).filter(_.length>0).filter(line=>line.indexOf("bData")>0).take(3000)
+    val filterRDD = sc.textFile(sparkConf.get(GlobalContants.TASK_INPUT_PATH)).filter(_.length>0).filter(line=>line.indexOf("bData")>0)
 
-    filterRDD.map(logText=>{
+     val eventLogMap = filterRDD.map(logText=>{
        LogAnalysisUtils.analysisLog(logText,ipRulesBroadCast.value)
-    }).foreach(println(_))
+    })
 
-//    Map(os_n -> 8.0.0, ip -> 222.85.235.216, city -> 贵阳, behaviorKey -> DFSJ103, access_time -> 1522351389000, country -> 中国, os_v -> Android, province -> 贵州, modelNum -> HUAWEIBKL-AL00, request_type -> GET , behaviorData -> {"zongKey":"FM601"}, behavior -> bData)
-//    Map(os_n -> 6.0, ip -> 219.157.54.132, city -> 洛阳, behaviorKey -> DFSJ100, access_time -> 1522351389000, country -> 中国, os_v -> Android, province -> 河南, modelNum -> HUAWEIVNS-AL00, request_type -> GET , behaviorData -> {"channelId":"59","zongKey":"FM206"}, behavior -> bData)
-
-
+    val tuple2RDD = eventLogMap.map(map => {
+      /**
+        * 构建rowkey原则：
+        * 1，唯一性 2，散列 3，长度不能过长，4，方便查询
+        *
+        * acceipss_time+"_"+ ip
+        */
+      //用户访问时间
+      val accessTime = map(EventLogContants.LOG_COLUMN_NAME_ACCESS_TIME)
+      //用户ip
+      val ip = map(EventLogContants.LOG_COLUMN_NAME_IP)
+      //构建rowkey
+      val rowKey = accessTime + "_" + Math.abs(ip.hashCode)
+      //构建put对象
+      val put = new Put(rowKey.getBytes())
+      map.foreach(t2 => {
+        put.addColumn(EventLogContants.HBASE_EVENT_LOG_TABLE_FAMILY.getBytes(), t2._1.getBytes(), t2._2.getBytes())
+      })
+      //保存到hbase中的数据一定要是对偶元组格式的
+      (new ImmutableBytesWritable(), put)
+    })
+    tuple2RDD.saveAsHadoopDataset(jobConf)
     sc.stop()
   }
 }
